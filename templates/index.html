@@ -1,7 +1,27 @@
+<!DOCTYPE html>
 <html>
 <head> </head>
 <body>
     <h1>Snapdf</h1>
     <p>Welcome to SnapPdf!</p>
+    <h2>UPLOAD PDF</h2>
+<form action="/convert" method="post" enctype="multipart/form-data">
+    <input type="file" name="pdf" required onchange="console.log(this.files)">
+    <select name="format">
+        <option value="jpg">JPG</option>
+        <option value="png">PNG</option>
+        <option value="jpeg">JPEG</option>
+    </select>
+    <button type="submit">Convert</button>
+</form>
 </body>
 </html>
+{% if images%}
+<h2>Converted Images</h2>
+{% for image in images%}
+    <div>
+        <img src="{{ url_for('static', filename=image) }}" alt="Converted Image">
+        <a href="{{ url_for('static', filename=image) }}" download>Download</a>
+    </div>
+{% endfor %}
+{% endif %}
