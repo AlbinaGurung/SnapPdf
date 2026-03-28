@@ -16,12 +16,12 @@
 </form>
 </body>
 </html>
-{% if images%}
-<h2>Converted Images</h2>
-{% for image in images%}
-    <div>
-        <img src="{{ url_for('static', filename=image) }}" alt="Converted Image">
-        <a href="{{ url_for('static', filename=image) }}" download>Download</a>
-    </div>
-{% endfor %}
-{% endif %}
+<button id="downloadAllBtn">Download All</button>
+
+<script>
+    const downloadUrl = "{{ url_for('download_all') }}"; // Flask generates the correct URL
+    document.getElementById('downloadAllBtn').addEventListener('click', function() {
+        window.location.href = downloadUrl; // browser navigates to the Flask route
+    });
+</script>
+

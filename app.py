@@ -1,6 +1,8 @@
+from curses import flash
 from dbm import dumb
 import os
-from flask import Flask, render_template, request
+import zipfile
+from flask import Flask, redirect, render_template, request, send_file, url_for
 from main import pdf_to_img
 
 app=Flask(__name__)
@@ -14,6 +16,24 @@ app.config['OUTPUT_FOLDER']=OUTPUT_FOLDER
 @app.route('/')
 def home():
     return render_template('index.html')    
+
+@app.route('/download-all')
+def download_all():
+   zip_path='static/outputs/converted_images.zip'
+   
+   # Remove old zip if exists
+   if os.path.exists(zip_path):
+        os.remove(zip_path)
+    
+   # Make sure folder exists
+   if not os.path.exists('static/outputs') or not os.listdir('static/outputs'):
+        flash("No images found to download.", "error")
+        return redirect(url_for('home'))
+
+   with zipfile.ZipFile(zip_path,'w') as zipf:
+    for image in os.listdir('static/outputs'):
+        zipf.write(os.path.join('static/outputs',image),arcname=image)
+   return send_file(zip_path,as_attachment=True)
 
 @app.route('/convert',methods=["POST"])
 def convert():
